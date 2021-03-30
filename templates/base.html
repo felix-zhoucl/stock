@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static%}
+    <link rel="stylesheet" href="{% static 'css/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.11.2-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts-en.common.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+             data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+
+    </script>
+    {% block head %}{% endblock head%}
+    <title>{% block title %}{% endblock title %}</title>
+
+</head>
+<body>
+
+<section class="hero">
+    <!-- Hero head: will stick at the top -->
+    <div class="hero-head">
+        <header class="navbar has-shadow has-background-white is-fixed-top" role="navigation"
+                aria-label="main navigation">
+            <div class="container">
+                <!--首页图标-->
+                <div class="navbar-brand" style="margin-left: 5rem;">
+                    <a href="/" class="navbar-item">
+                        <img src="/static/images/logo.png" width="112" height="36">
+                    </a>
+                    <span class="navbar-burger burger" data-target="navbarBase">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </div>
+                <div class="navbar-menu" id="navbarBase">
+                    <div class="navbar-start">
+                        <a href="/" class="navbar-item">首页</a>
+                        <a href="/login" class="navbar-item">我的关注</a>
+                    </div>
+
+
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+
+
+                            <div id="searchDropdown" class="dropdown">
+                                <div class="dropdown-trigger">
+                                    <div class="control has-icons-right">
+                                        <input id="searchfields" type="text" class="input" style="width: 20rem;"
+                                               placeholder="输入股票名称或股票代码进行搜索">
+                                        <span class="icon is-right">
+                                                 <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-menu"  role="menu" style="width:20rem;">
+                                    <div class="dropdown-content" id="dropdown-menu">
+                                    <!--搜索结果-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="navbar-item">
+                            <div class="field is-grouped">
+
+                                {% if request.session.islogin %}
+                                <p style="padding-top: 0.5rem;">欢迎您：</p>
+                                <a class="navbar-item" href="{% url 'register'%}">{{request.session.username }}</a>
+                                <a class="button is-info" href="{% url 'logout'%}">退出</a>
+                                {% else %}
+                                <a class="button is-info" href="{% url 'login'%}">登录</a>
+                                <a class="navbar-item" href="{% url 'register'%}">注册</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body has-background-white">
+        <div class="tile">
+            <div class="tile is-vertical is-parent is-2">
+                {% block left %}
+                {% if request.session.islogin %}
+                <div class="card" style="height:40rem">
+                    <div class="card-header">
+                        <p class="card-header-title">关注股票</p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-hoverable is-fullwidth is-size-6 is-bordered">
+                            <tbody id="favlist" class="has-text-info has-text-centered">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+
+                {% endif %}
+                {% endblock left %}
+            </div>
+            <div class="tile is-vertical is-parent is-7">
+                {% block middle %}{% endblock middle %}
+            </div>
+            <div class="tile is-vertical is-parent is-3">
+                {% block right %}
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">
+                            <a href="{% url 'ranktypeDefault'%}hangye/1" style="margin-left:1rem">行业板块more>>></a>
+                        </p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-narrow is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>板块</th>
+                                <th>上涨</th>
+                                <th>下跌</th>
+                                <th>平均价格</th>
+                                <th>平均涨跌幅</th>
+                            </tr>
+                            </thead>
+                            <tbody id="hangyeMinRank" class="has-text-danger">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">
+                            <a href="{% url 'ranktypeDefault'%}gainian/1" style="margin-left:1rem">概念板块more>>></a>
+                        </p>
+                    </div>
+                    <div class="card-content " style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-narrow is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>板块</th>
+                                <th>上涨</th>
+                                <th>下跌</th>
+                                <th>平均价格</th>
+                                <th>平均涨跌幅</th>
+                            </tr>
+                            </thead>
+                            <tbody id="gainianMinRank" class="has-text-danger">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">
+                            <a href="{% url 'ranktypeDefault'%}diyu/1" style="margin-left:1rem">地域板块more>>></a>
+                        </p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-narrow is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>板块</th>
+                                <th>上涨</th>
+                                <th>下跌</th>
+                                <th>平均价格</th>
+                                <th>平均涨跌幅</th>
+                            </tr>
+                            </thead>
+                            <tbody id="diyuMinRank" class="has-text-danger">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endblock right %}
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<footer class="footer">
+    <div class="content has-text-centered is-dark">
+        <p>
+            <a href="#" target="_blank">关于我们</a> |
+            <a href="#" target="_blank">免责声明</a> |
+            <a href="#">专业咨询</a>
+            <span class="contact">联系我们：mutangzero@gmail.com</span>
+        </p>
+        <span>Copyright © 2020 Felixxxxx . All Rights Reserved</span>
+    </div>
+</footer>
+<script type="text/javascript" src="{% static 'js/base.js'%}"></script>
+{% block footer%}{% endblock footer%}
+</body>
+</html>

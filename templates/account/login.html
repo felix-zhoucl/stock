@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static%}
+    <link rel="stylesheet" href="{% static 'css/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.11.2-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+    (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    $notification = $delete.parentNode;
+
+    $delete.addEventListener('click', () => {
+        $notification.parentNode.removeChild($notification);
+    });
+    <!--设置延时自动消失-->
+    new Promise(resolve => setTimeout(resolve, 3000)).then(()=>{
+        $notification.parentNode.removeChild($notification);
+    })
+  });
+});
+
+
+    </script>
+    <title>用户登录</title>
+</head>
+<body>
+
+<section class="hero">
+    <!--首页图片-->
+    <div class="hero-header has-background-white">
+        <div style="margin-left:10rem">
+            <a href="/">
+                <img src="/static/images/logo.png" width="200" height="100">
+            </a>
+        </div>
+    </div>
+
+
+    <!-- 内容 -->
+    <div class="hero-body has-background-white">
+        <div class="tile is-ancestor">
+            <!--左半部-->
+            <div class="tile is-vertical is-parent is-4">
+                {% block left %}{% endblock left %}
+            </div>
+
+            <!--中间-->
+            <div class="tile is-parent is-vertical is-4">
+
+                <div class="box">
+                    <div class="media">
+                        <div class="media-content">
+                            <!--顶部导航-->
+                            <div class="tile ">
+                                <div class="tile is-child is-4">
+                                </div>
+                                <div class="tile is-child is-4">
+                                    <div class="navbar " style="position: relative; top: 1px;">
+                                        <div class="navbar-tabs ">
+                                            <a href="/login"
+                                               class="navbar-item is-tab is-active">&nbsp&nbsp登录&nbsp&nbsp</a>
+                                            <a href="/register" class="navbar-item is-tab">&nbsp&nbsp注册&nbsp&nbsp</a>
+                                        </div>
+                                    </div>
+                                    <span>&nbsp</span>
+                                </div>
+                            </div>
+                            <!--登录表单-->
+                            <div class="tile">
+                                <div class="tile is-child is-2">
+                                </div>
+                                <div class="tile is-child is-8">
+                                    <div class="content">
+
+
+                                        <form method="POST" action="">
+                                            {% csrf_token%}
+
+                                            <div class="field">
+                                                <label class="label">用户名</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    <input name="username" class="input form-control" type="text"
+                                                           placeholder="用户名或邮箱地址">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-user"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <label class="label">密码</label>
+                                                <p class="control has-icons-left">
+                                                    <input name="password" class="input form-control" type="password"
+                                                           placeholder="请输入密码">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-lock"></i>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <!--<div class="field">-->
+                                                <!--<div class="control">-->
+                                                    <!--<label class="checkbox">-->
+                                                        <!--<input type="checkbox"name="rememberMe">-->
+                                                        <!--记住我-->
+                                                    <!--</label>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                            <div class="field is-grouped is-grouped-centered">
+                                                <div class="control">
+                                                    <button class="button is-info" type="submit">登录</button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+
+                                    </div>
+                                </div>
+                                <div class="tile is-child is-2">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% for message in messages%}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                        <div class="notification is-success">
+                            <button class="delete"></button>
+                            {{message}}
+                        </div>
+                    {% else %}
+                        <div class="notification is-danger">
+                            <button class="delete"></button>
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

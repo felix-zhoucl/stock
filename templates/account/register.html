@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    {% load static%}
+    <link rel="stylesheet" href="{% static 'css/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.11.2-web/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script type="text/javascript" src="{% static 'js/register.js'%}"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+             data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+    </script>
+</head>
+<body>
+
+<section class="hero">
+    <!--首页图片-->
+    <div class="hero-header has-background-white">
+        <div style="margin-left:10rem">
+            <a href="/">
+                <img src="/static/images/logo.png" width="200" height="100" alt="返回首页">
+            </a>
+        </div>
+    </div>
+
+
+    <!-- 内容 -->
+    <div class="hero-body has-background-white">
+        <div class="tile is-ancestor">
+            <!--左半部-->
+            <div class="tile is-vertical is-parent is-4">
+                {% block left %}{% endblock left %}
+            </div>
+
+            <!--中间-->
+            <div class="tile is-parent is-vertical is-4">
+                <div class="box">
+                    <div class="media">
+                        <div class="media-content">
+                            <!--顶部导航-->
+                            <div class="tile ">
+                                <div class="tile is-child is-4">
+                                </div>
+                                <div class="tile is-child is-4">
+                                    <div class="navbar " style="position: relative; top: 1px;">
+                                        <div class="navbar-tabs ">
+                                            <a href="/login" class="navbar-item is-tab ">&nbsp&nbsp登录&nbsp&nbsp</a>
+                                            <a href="/register" class="navbar-item is-tab is-active">&nbsp&nbsp注册&nbsp&nbsp</a>
+                                        </div>
+                                    </div>
+                                    <span>&nbsp</span>
+                                </div>
+                            </div>
+                            <!--登录表单-->
+                            <div class="tile">
+                                <div class="tile is-child is-2">
+                                </div>
+                                <div class="tile is-child is-8">
+                                    <div class="content">
+                                        <form method="POST" action="" id="registerForm">
+                                            {% csrf_token %}
+                                            <!--username-->
+                                            <div class="field">
+                                                <label class="label">用户名</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    {{form.username}}
+                                                    <span class="icon is-small is-left">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                                    <span class="icon is-small is-right">
+                                                    <i id="icon_username" class=""></i>
+                                                </span>
+                                                </div>
+                                                <p id="id_username_error" class="help is-danger">
+                                                    {{form.errors.username}}</p>
+                                            </div>
+                                            <!--email-->
+                                            <div class="field">
+                                                <label class="label">邮箱</label>
+                                                <p class="control has-icons-left has-icons-right">
+                                                    {{form.email}}
+                                                    <span class="icon is-small is-left">
+                                                 <i class="fas fa-envelope"></i>
+                                                </span>
+                                                    <span class="icon is-small is-right">
+                                                    <i id="icon_email" class=""></i>
+                                                </span>
+                                                </p>
+                                                <p id="id_email_error" class="help is-danger">{{form.errors.email}}</p>
+                                            </div>
+                                            <!--password1-->
+                                            <div class="field">
+                                                <label class="label">密码</label>
+                                                <p class="control has-icons-left has-icons-right">
+                                                    {{form.password1}}
+                                                    <span class="icon is-small is-left">
+                                                    <i class="fas fa-lock"></i>
+                                                </span>
+                                                    <span class="icon is-small is-right">
+                                                    <i id="icon_pass1" class=""></i>
+                                                </span>
+                                                </p>
+                                                <p id="id_password1_error" class="help is-danger">
+                                                    {{form.errors.password1}}</p>
+                                            </div>
+                                            <!--password2-->
+                                            <div class="field">
+                                                <label class="label">确认密码</label>
+                                                <p class="control has-icons-left has-icons-right">
+                                                    {{form.password2}}
+                                                    <span class="icon is-small is-left">
+                                                    <i class="fas fa-lock"></i>
+                                                </span>
+                                                    <span class="icon is-small is-right">
+                                                    <i id="icon_pass2" class=""></i>
+                                                </span>
+                                                <p id="id_password2_error" class="help is-danger">
+                                                    {{form.errors.password2}}</p>
+                                                </p>
+                                            </div>
+                                            <!--agreement -->
+                                            <div class="field">
+                                                <div class="control">
+                                                    <label class="checkbox form-control">
+                                                        <input type="checkbox" id="agreement">
+                                                        我已阅读并同意<a herf="#">《使用协议》</a>
+                                                    </label>
+                                                </div>
+                                                <p id="agreement_error" class="help is-danger"></p>
+                                            </div>
+                                            <!--submit-->
+                                            <div class="field is-grouped is-grouped-centered">
+                                                <div class="control">
+                                                    <button id="submitButton" class="button is-info">注册</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="tile is-child is-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
+

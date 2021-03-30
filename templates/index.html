@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% block title %}预见股票预测分析系统{% endblock title %}
+{% block head %}
+{% load static%}
+<script type="text/javascript"src="{% static 'js/get_data.js'%}"></script>
+{% endblock head%}
+{% block middle %}
+<div class="box">
+    <div class="media">
+        <div class="tile is-ancestor media-content ">
+            <div class="tile is-vertical is-4">
+                <div class="tile is-parent ">
+                    <div class="tile is-4">
+                        <p class="title is-size-5"><a href="#"><strong>上证指数</strong> </a></p>
+                    </div>
+                    <div class="tile is-vertical is-8">
+                        <p class="tile is-size-7 has-text-danger" id="shzs">
+                        </p>
+                        <p class="tile is-size-7">
+                            上涨:<span id="shzhang" class="has-text-danger"></span>
+                            平盘:<span id="shping"></span>
+                            下跌:<span id="shdie" class="has-text-success"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="tile is-10">
+                    <figure class="image is-256x256">
+                        <img src="http://img1.money.126.net/chart/hs/time/210x140/0000001.png" alt="">
+                    </figure>
+                </div>
+            </div>
+
+            <div class="tile is-vertical is-4">
+                <div class="tile is-parent ">
+                    <div class="tile is-4">
+                        <p class="title is-size-5"><a href="#"><strong>深证成指</strong> </a></p>
+                    </div>
+                    <div class="tile is-vertical is-8" >
+                        <p class="tile is-size-7 has-text-success" id="szzs">
+                        </p>
+                        <p class="tile is-size-7">
+                            上涨:<span id="szzhang" class="has-text-danger"></span>
+                            平盘:<span id="szping"></span>
+                            下跌:<span id="szdie" class="has-text-success"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="tile is-10">
+                    <figure class="image is-256x256">
+                        <img src="http://img1.money.126.net/chart/hs/time/210x140/1399001.png" alt="">
+                    </figure>
+                </div>
+            </div>
+
+            <div class="tile is-vertical is-4">
+                <div class="tile is-parent ">
+                    <div class="tile is-4">
+                        <p class="title is-size-5"><a href="#"><strong>沪深300</strong> </a></p>
+                    </div>
+                    <div class="tile is-vertical is-8" >
+                        <p class="tile is-size-7 has-text-danger" id="hszs">
+                        </p>
+                        <p class="tile is-size-7">
+                            上涨:<span id="hszhang" class="has-text-danger"></span>
+                            平盘:<span id="hsping"></span>
+                            下跌:<span id="hsdie" class="has-text-success"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="tile is-10">
+                    <figure class="image is-256x256">
+                        <img src="http://img1.money.126.net/chart/hs/time/210x140/1399300.png" alt="">
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    <div class="navbar has-shadow" style="position: relative; top: -1rem;">
+        <div class="container">
+            <div class="navbar-tabs">
+                <a id="hsa" href="{% url 'index'%}" class="navbar-item is-tab ">沪深A股</a>
+                <a id="sha" href="{% url 'index'%}index/sha" class="navbar-item is-tab">上证A股</a>
+                <a id="sza" href="{% url 'index'%}index/sza" class="navbar-item is-tab">深圳A股</a>
+                <a id="zxb" href="{% url 'index'%}index/zxb" class="navbar-item is-tab">中小板</a>
+                <a id="kcb" href="{% url 'index'%}index/kcb" class="navbar-item is-tab">科创板</a>
+                <a id="hsb" href="{% url 'index'%}index/hsb" class="navbar-item is-tab">沪深B股</a>
+            </div>
+        </div>
+    </div>
+    <div class="tile is-vertical">
+        <div class="tile is-12">
+            <div class="tile is-3">
+                <div class="card is-fullwidth">
+                    <div class="card-header">
+                        <p class="card-header-title"><a href="{% url 'ranklist'%}{{str}}/zhangfu/1">涨幅排名</a></p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>股价</th>
+                                <th>涨跌幅</th>
+                            </tr>
+                            </thead>
+                            <tbody class="has-text-danger">
+                            {%for item in zhangfu %}
+                            <tr>
+                                <td><a href="{% url 'details'%}{{item.stockcode}}">{{item.stockname}}</a></td>
+                                <td>{{item.tclose}}</td>
+                                <td>{{item.pchg|floatformat:2}}%</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tile is-3">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title"><a href="{% url 'ranklist'%}{{str}}/diefu/1">跌幅排名</a></p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>股价</th>
+                                <th>涨跌幅</th>
+                            </tr>
+                            </thead>
+                            <tbody class="has-text-success">
+                            {%for item in diefu %}
+                            <tr>
+                                <td><a href="{% url 'details'%}{{item.stockcode}}">{{item.stockname}}</a></td>
+                                <td>{{item.tclose}}</td>
+                                <td>{{item.pchg|floatformat:2}}%</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tile is-3">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title"><a href="{% url 'ranklist'%}{{str}}/chengjiaoliang/1">成交量排名</a></p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>股价</th>
+                                <th>成交量</th>
+                            </tr>
+                            </thead>
+                            <tbody class="has-text-danger">
+
+                            {%for item in vo %}
+                            <tr>
+                                <td><a href="{% url 'details'%}{{item.stockcode}}">{{item.stockname}}</a></td>
+                                <td>{{item.tclose}}</td>
+                                <td>{% widthratio item.voturnover 10000 1%}万</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tile is-3">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title"><a href="{% url 'ranklist'%}{{str}}/chengjiaoe/1">成交额排名</a></p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <table class="table is-striped is-hoverable is-fullwidth is-size-7 ">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>股价</th>
+                                <th>成交额</th>
+                            </tr>
+                            </thead>
+                            <tbody class="has-text-danger">
+                            {% load templatehelper %}
+                            {%for item in va %}
+                            <tr>
+                                <td><a href="{% url 'details'%}{{item.stockcode}}">{{item.stockname}}</a></td>
+                                <td>{{item.tclose}}</td>
+                                <td>{{item.vaturnover|div:100000000}}亿</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% load static%}
+<script type="text/javascript">
+     $('#{{str}}').attr({class:"navbar-item is-tab is-active"});
+</script>
+{% endblock middle %}

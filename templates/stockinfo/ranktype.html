@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}板块排行榜{% endblock title %}
+{% block middle %}
+<div class="box">
+    <div class="navbar has-shadow" style="position: relative; top: -1rem;">
+        <div class="container">
+            <div class="navbar-tabs">
+                <a id="hangyetab" href="{% url 'ranktypeDefault'%}" class="navbar-item is-tab is-active">行业板块</a>
+                <a id="diyutab" href="{% url 'ranktypeDefault'%}diyu/1" class="navbar-item is-tab">地域板块</a>
+                <a id="gainiantab" href="{% url 'ranktypeDefault'%}gainian/1" class="navbar-item is-tab">概念板块</a>
+            </div>
+        </div>
+    </div>
+    <div class="card is-fullwidth">
+        <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+            <table class="table is-striped is-hoverable is-fullwidth is-size-7 "style="margin-bottom:-1rem">
+                <thead>
+                <tr>
+                    <th>排名</th>
+                    <th>板块名称</th>
+                    <th>上涨</th>
+                    <th>下跌</th>
+                    <th>平均价格</th>
+                    <th>平均涨跌幅</th>
+                    <th>领涨股票</th>
+                    <th>股价</th>
+                    <th>涨幅</th>
+                    <th>领跌股票</th>
+                    <th>股价</th>
+                    <th>跌幅</th>
+                </tr>
+                </thead>
+                <tbody id="RankList" class="has-text-danger">
+                <!--当前页内容遍历展示-->
+                {%for item in page%}
+                <tr>
+                    <td class="has-text-black">{{forloop.counter}}</td>
+                    <td><a href="{% url 'ranktypelistDefault'%}{{type}}/{{item.typeid}}/1">{{item.name}}</a></td>
+                    <td>{{item.up}}</td>
+                    <td class="has-text-success">{{item.down}}</td>
+                    {% if item.avgPchg >= 0 %}
+                    <td>{{item.avgPrice|floatformat:2}}</td>
+                    <td>{{item.avgPchg}}%</td>
+
+                    {%else%}
+                    <td class="has-text-success">{{item.avgPrice|floatformat:2}}</td>
+                    <td class="has-text-success">{{item.avgPchg|floatformat:2}}</td>
+
+                    {%endif%}
+
+                    <td>{{item.maxStockName}}</td>
+                    <td>{{item.maxStockPrice|floatformat:2}}</td>
+                    <td>{{item.maxStockPercent}}%</td>
+                    <td class="has-text-success">{{item.minStockName}}</td>
+                    <td class="has-text-success">{{item.minStockPrice|floatformat:2}}</td>
+                    <td class="has-text-success">{{item.minStockPercent}}%</td>
+                </tr>
+                {%endfor%}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <nav class="pagination is-small" role="navigation" aria-label="pagination">
+        {% if page.has_previous %}
+        <a class="pagination-previous" href="/ranktype/{{type}}/{{page.previous_page_number}}">上一页</a>
+        {% endif %}
+        {% if page.has_next %}
+        <a class="pagination-next" href="/ranktype/{{type}}/{{page.next_page_number}}">下一页</a>
+        {% endif %}
+        <ul class="pagination-list">
+            {% for num in page.paginator.page_range%}
+            {%if num == page.number%}
+            <li><a class="pagination-link is-current">{{ num }}</a></li>
+            {%else%}
+            <li><a class="pagination-link" href="/ranktype/{{type}}/{{num}}">{{ num }}</a></li>
+            {%endif%}
+            {% endfor %}
+        </ul>
+    </nav>
+
+</div>
+
+{% endblock middle %}
+
+{% block footer%}
+{% load static%}
+<script type="text/javascript">
+    {{ranktype}}
+</script>
+{% endblock footer%}

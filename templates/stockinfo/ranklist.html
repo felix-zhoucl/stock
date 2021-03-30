@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}排行榜{% endblock title %}
+{% block middle %}
+<div class="box">
+    <div class="navbar has-shadow" style="position: relative; top: -1rem;">
+        <div class="container">
+            <div class="navbar-tabs">
+                <a id="hsa" href="{% url 'ranklist'%}" class="navbar-item is-tab">沪深A股</a>
+                <a id="sha" href="{% url 'ranklist'%}sha/zhangfu/1" class="navbar-item is-tab">上证A股</a>
+                <a id="sza" href="{% url 'ranklist'%}sza/zhangfu/1" class="navbar-item is-tab">深圳A股</a>
+                <a id="zxb" href="{% url 'ranklist'%}zxb/zhangfu/1" class="navbar-item is-tab">中小板</a>
+                <a id="kcb" href="{% url 'ranklist'%}kcb/zhangfu/1" class="navbar-item is-tab">科创板</a>
+                <a id="hsb" href="{% url 'ranklist'%}hsb/zhangfu/1" class="navbar-item is-tab ">沪深B股</a>
+            </div>
+        </div>
+    </div>
+    <div class="navbar" style="position: relative; top: -1rem;">
+        <div class="container">
+            <div class="navbar-tabs">
+                <a id="zhangfu" href="{% url 'ranklist'%}{{str}}/zhangfu/1" class="navbar-item is-tab">涨幅排行</a>
+                <a id="diefu" href="{% url 'ranklist'%}{{str}}/diefu/1" class="navbar-item is-tab">跌幅排行</a>
+                <a id="chengjiaoe" href="{% url 'ranklist'%}{{str}}/chengjiaoe/1" class="navbar-item is-tab">成交额排行</a>
+                <a id="chengjiaoliang" href="{% url 'ranklist'%}{{str}}/chengjiaoliang/1" class="navbar-item is-tab ">成交量排行</a>
+            </div>
+        </div>
+    </div>
+    <div class="card is-fullwidth">
+        <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+            <table class="table is-striped is-hoverable is-fullwidth is-size-7 "style="margin-bottom:-1rem;margin-top:-1rem">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>交易时间</th>
+                    <th>股票名称</th>
+                    <th>股票代码</th>
+                    <th>昨收</th>
+                    <th>今开</th>
+                    <th>今收</th>
+                    <th>最高</th>
+                    <th>最低</th>
+                    <th>涨跌额</th>
+                    <th>涨跌幅</th>
+                    <th>成交金额</th>
+                    <th>成交量</th>
+                </tr>
+                </thead>
+                <tbody id="RankList" class="has-text-danger">
+                <!--当前页内容遍历展示-->
+                {% load templatehelper %}
+                {%for item in page%}
+                    {% if item.pchg >= 0 %}
+                <tr class="has-text-danger">
+                    <td class="has-text-black">{{forloop.counter}}</td>
+                    <td>{{item.date}}</td>
+                    <td><a href="{% url 'details'%}{{item.stockcode}}">{{item.stockname}}</a></td>
+                    <td>{{item.stockcode}}</td>
+                    <td>{{item.lclose}}</td>
+                    <td>{{item.topen}}</td>
+                    <td>{{item.tclose}}</td>
+                    <td>{{item.high}}</td>
+                    <td>{{item.low}}</td>
+                    <td>{{item.chg}}</td>
+                    <td>{{item.pchg|floatformat:2}}%</td>
+                    <td>{{item.vaturnover|div:100000000}}亿</td>
+                    <td>{% widthratio item.voturnover 10000 1%}万</td>
+                </tr>
+                    {%else%}
+                <tr class="has-text-success">
+                    <td class="has-text-black">{{forloop.counter}}</td>
+                    <td>{{item.date}}</td>
+                    <td><a href="{% url 'details'%}/{{item.stockid}}">{{item.stockname}}</a></td>
+                    <td>{{item.stockcode}}</td>
+                    <td>{{item.lclose}}</td>
+                    <td>{{item.topen}}</td>
+                    <td>{{item.tclose}}</td>
+                    <td>{{item.high}}</td>
+                    <td>{{item.low}}</td>
+                    <td>{{item.chg}}</td>
+                    <td>{{item.pchg|floatformat:2}}%</td>
+                    <td>{{item.vaturnover|div:100000000}}亿</td>
+                    <td>{% widthratio item.voturnover 10000 1%}万</td>
+                </tr>
+                    {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <nav class="pagination is-small" role="navigation" aria-label="pagination">
+        {% if page.has_previous %}
+        <a class="pagination-previous" href="{% url 'ranklist'%}{{str}}/{{type}}/{{page.previous_page_number}}">上一页</a>
+        {% endif %}
+        {% if page.has_next %}
+        <a class="pagination-next" href="{% url 'ranklist'%}{{str}}/{{type}}/{{page.next_page_number}}">下一页</a>
+        {% endif %}
+        <ul class="pagination-list">
+            {% for num in page.paginator.page_range%}
+            {%if num == page.number%}
+            <li><a class="pagination-link is-current">{{ num }}</a></li>
+            {%else%}
+            <li><a class="pagination-link" href="{% url 'ranklist'%}{{str}}/{{type}}/{{num}}">{{ num }}</a></li>
+            {%endif%}
+            {% endfor %}
+        </ul>
+    </nav>
+
+</div>
+
+{% endblock middle %}
+
+{% block footer%}
+{% load static%}
+<script type="text/javascript">
+     $('#{{str}}').attr({class:"navbar-item is-tab is-active"});
+     $('#{{type}}').attr({class:"navbar-item is-tab is-active"});
+</script>
+{% endblock footer%}

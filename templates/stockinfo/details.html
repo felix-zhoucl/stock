@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block title %}股票信息{% endblock title %}
+{% block head %}
+
+{% endblock head%}
+{% block middle %}
+<div class="box">
+    <div class="tile">
+        <div class="tile is-vertical is-4">
+            <div class="card is-fullwidth">
+                <div class="card-header">
+                    <p class="card-header-title " style="margin-left:1rem;margin-right:-1rem;">
+
+                        <span class="has-text-info is-size-5"><span id="stockname" >{{stock.stockname}}</span>{{stock.stockcode}}</span>
+
+                        <button id="followButton" style="margin-left:1rem" onclick="followButton()"></button>
+
+                    </p>
+                </div>
+                <div class="card-content">
+                    {% load templatehelper %}
+                    {% if stock.pchg >= 0 %}
+                    <p class="title  has-text-danger">{{stock.tclose}}<font
+                            size="4rem">{{stock.chg}}({{stock.pchg}}%)</font></p>
+                    <p class="is-size-6">
+                        今开：<span class="has-text-danger">{{stock.topen}}</span>&nbsp;&nbsp;
+                        昨收：<span class="has-text-danger">{{stock.lclose}}</span> <br>
+                        最高：<span class="has-text-danger">{{stock.high}}</span>&nbsp;&nbsp;
+                        最低：<span class="has-text-danger">{{stock.low}}</span><br>
+                        {%else%}
+                    <p class="title  has-text-success">{{stock.tclose}}<font
+                            size="4rem">{{stock.chg}}({{stock.pchg}}%)</font></p>
+                    <p class="is-size-6">
+                        今开：<span class="has-text-success">{{stock.topen}}</span>&nbsp;&nbsp;
+                        昨收：<span class="has-text-success">{{stock.lclose}}</span> <br>
+                        最高：<span class="has-text-success">{{stock.high}}</span>&nbsp;&nbsp;
+                        最低：<span class="has-text-success">{{stock.low}}</span><br>
+                        {%endif%}
+                        成交量：<span class="has-text-info has-text-weight-semibold">{% widthratio stock.voturnover 10000 1%}万手</span><br>
+                        成交额：<span
+                            class="has-text-info has-text-weight-semibold">{{stock.vaturnover|div:100000000}}亿</span><br>
+                        交易日期：<span class="has-text-info has-text-weight-semibold">{{stock.date}}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="card is-fullwidth">
+                <div class="card-content"
+                     style="margin-left:0rem;margin-right:-1rem;margin-top:-1rem;margin-bottom:-1rem;">
+                    <p>
+                        行业：<span class="has-text-info">{{info.hangye}}</span>
+                    </p>
+                    <p>
+                        地域：<span class="has-text-info">{{info.diyu}}</span>
+                    </p>
+                    <p>
+                        概念：<span class="has-text-info">{{info.gainian}}</span>
+                    </p>
+                    <p id="stockid" style="display:none">{{info.stockid}}</p>
+                </div>
+            </div>
+            <div class="card is-fullwidth">
+                <div id="echarts_container_mini" style="width:15rem;height:15rem;">
+                </div>
+            </div>
+
+        </div>
+        <div class="tile is-parent is-vertical is-8">
+            <div>
+                <div class="card is-fullwidth">
+                    <div class="card-header ">
+                        <p class="card-header-title">
+                            <a href="#">历史价格及预测</a></p>
+                        <p class="card-header-title">
+
+                        </p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <div id="echarts_container" style="width:;height:25rem;">
+                            <script type="text/javascript">
+
+                            function history(){
+                                var myChart = echarts.init(document.getElementById('echarts_container'));
+                                var date=[]
+                                var price=[]
+                                var nu=[]
+                                {% for item in history%}
+                                    {% if item.tclose > 0%}
+                                    date.push('{{item.date}}')
+                                    price.push('{{item.tclose}}')
+                                    nu.push('-')
+                                    {% endif%}
+                                {% endfor %}
+                                nu.splice(2006,26)
+                                var option = {
+                                    grid: {
+                                        left:'18%',
+                                        right:'16%',
+            //                            containLabel:true
+                                    },
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'cross'
+                                        }
+                                    },dataZoom: [
+                                        {
+                                            type: 'inside',
+                                            start: 90,
+                                            end: 100
+                                        },
+                                        {
+                                            show: true,
+                                            type: 'slider',
+                                            top: '90%',
+                                            start: 50,
+                                            end: 100
+                                        }
+                                    ],
+                                    legend: {
+                                        data:['股价','预测'],
+                                        left:'50%',
+                                        top:7,
+                                    },
+                                    grid: {
+                                        left: '8%',
+                                        right: '10%',
+                                        bottom: '15%'
+                                    },
+                                    xAxis: {
+                                        name:'时间',
+                                        data: date.concat('2020612')
+                                    },
+
+                                    yAxis: {
+                                        name:'价格',
+                                        type : 'value',
+                                        scale : true,
+                                        splitArea: {
+                                            show: true
+                                        }
+                                    },
+                                    series: [
+                                       {
+                                          name: '股价',
+                                          type: 'line',
+                                          smooth: false,
+                                          data: price,
+                                          areaStyle: {
+                                              normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                                  { offset: 1, color: "#CCFFFF" }
+                                                ])
+                                              }
+                                            }, //填充区域样式
+                                          lineStyle: {
+                                               color: "#00b5ff",
+                                               width: 1
+                                          }, //线条的样式
+                                          itemStyle: {
+                                               color: "#00b5ff",
+                                               opacity: 0 //为0不会绘制图形拐点消失
+                                          }, //拐点的样式
+                                          markLine: {
+                                            symbol: ['none', 'none'],
+                                            data:[
+
+                                                {
+                                                    name: 'min line on close',
+                                                    type: 'min',
+                                                    lineStyle: {
+                                                        normal: {
+                                                            color: 'red'
+                                                        }
+                                                    },
+                                                },
+                                                {
+                                                    name: 'max line on close',
+                                                    type: 'max',
+                                                    lineStyle: {
+                                                        normal: {
+                                                            color: 'red'
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                       },
+                                       {
+                                            name: '预测',
+                                            type: 'line',
+                                            data: nu.concat({{pre}}),
+                                            smooth: true,
+                                            lineStyle: {
+                                                opacity: 0.5
+                                            },
+                                            itemStyle: {
+                                                opacity: 0 //为0不会绘制图形拐点消失
+                                            } //拐点的样式
+                                        },
+
+                                    ]
+                                };
+                                myChart.setOption(option);
+                              }
+                              history();
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="card is-fullwidth">
+                    <div class="card-header">
+                        <p class="card-header-title"><a herf="#">K线图</a></p>
+                    </div>
+                    <div class="card-content" style="margin-left:-1rem;margin-right:-1rem;">
+                        <div id="echarts_container_kline" style="width:;height:25rem;">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% block footer%}
+<script type="text/javascript" src="/static/js/detail.js">
+    checkFollowed()
+</script>
+{% endblock footer%}
+{% endblock middle %}

@@ -1,0 +1,27 @@
+body {
+    background: #f8f8f8;
+}
+.tag.is-lightblue {
+    color: #2d84cc;
+    background: #ebf3fb;
+}
+.ml-10 {
+    margin-left: 1rem;
+}
+.lh-20 {
+    line-height: 2rem;
+}
+.card {
+    margin-bottom: 1rem;
+}
+.section {
+    padding-top: 1rem;
+}
+.fa-15 {
+    font-size: 1.5rem;
+}
+.fa.fa-fire {
+    font-size: 1.2rem;
+    color: red;
+    margin-left: 1rem;
+}

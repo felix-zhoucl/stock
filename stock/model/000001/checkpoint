@@ -1,0 +1,6 @@
+model_checkpoint_path: "000001-800"
+all_model_checkpoint_paths: "000001-0"
+all_model_checkpoint_paths: "000001-200"
+all_model_checkpoint_paths: "000001-400"
+all_model_checkpoint_paths: "000001-600"
+all_model_checkpoint_paths: "000001-800"
